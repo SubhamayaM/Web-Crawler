@@ -1,0 +1,11 @@
+# Libraries
+1. requests – HTTP requests
+2. BeautifulSoup or lxml – HTML/XML parsing
+3. urllib – URL parsing & normalization
+4. Selenium – For crawling dynamic JavaScript websites (optional, heavier)
+5. Scrapy – (If using a full crawling framework)
+
+6. scikit-learn – TF-IDF, keyword vectorization
+
+7. Dash / Streamlit / Flask – to show crawled data, keyword frequency
+8. matplotlib / seaborn – for simple bar charts, word clouds
