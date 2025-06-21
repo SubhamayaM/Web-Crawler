@@ -10,4 +10,4 @@ def extract_and_score(soup, keywords):
     word_count = Counter(lower_text.split())
     match_score = sum(word_count[k] for k in keywords if k in word_count)
 
-    
+    return full_text, match_score
