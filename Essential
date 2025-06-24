@@ -1,2 +1,4 @@
 # Navigate to your project directory
-python crawler.py
+ python crawler.py
+
+# Upgrade pip and install required packages
