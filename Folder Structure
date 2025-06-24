@@ -1,1 +1,10 @@
-
+news_crawler/
+├── rss_crawler.py          
+├── parser.py               
+├── rss_feeds.txt           
+├── requirements.txt        
+├── output/                 
+│   └── rss_data.json       
+├── logs/                   
+│   └── crawler.log
+└── README.md       
