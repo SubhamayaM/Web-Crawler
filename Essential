@@ -2,3 +2,5 @@
  python crawler.py
 
 # Upgrade pip and install required packages
+requests
+beautifulsoup4
