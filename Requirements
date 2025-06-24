@@ -1,8 +1,5 @@
 # Libraries
 
-requests
-beautifulsoup4
-
 1. requests – HTTP requests
 2. BeautifulSoup or lxml – HTML/XML parsing
 3. urllib – URL parsing & normalization
