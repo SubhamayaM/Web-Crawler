@@ -1,82 +1,91 @@
+import feedparser
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin, urlparse
 from parser import extract_and_score
 import json
 import os
 
-visited = set()
-results = []
-headers = {"User-Agent": "GenericNewsCrawler/1.0"}
-
-# Prompt for keywords
+# User input for keywords
 print("\n📝 Enter the main keywords (e.g., technology, war, climate):")
 main_keywords = input("➤ Main keywords (comma-separated): ").lower().split(",")
 
 print("\n📝 Enter associated keywords (optional, e.g., AI, UN, economy):")
 assoc_keywords = input("➤ Associated keywords (comma-separated): ").lower().split(",")
 
-# Clean and combine keywords
+# Clean up keywords
 KEYWORDS = [kw.strip() for kw in main_keywords + assoc_keywords if kw.strip()]
+MAX_RESULTS = 10
+MIN_SCORE = 2
 
-MAX_DEPTH = 2
-MAX_RESULTS = 10  # Strict cap on final output count
+results = []
 
-def crawl(url, depth=0):
-    if depth > MAX_DEPTH or url in visited or len(results) >= MAX_RESULTS:
-        return
-    visited.add(url)
-
-    print(f"🌐 Visiting: {url} (Depth {depth})")
-
+def fetch_article(url):
     try:
-        response = requests.get(url, headers=headers, timeout=5)
-        if response.status_code == 200 and "text/html" in response.headers.get("Content-Type", ""):
+        response = requests.get(url, headers={"User-Agent": "NewsRSSBot/1.0"}, timeout=5)
+        if response.status_code != 200:
+            return False
+
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        # 🔁 Handle canonical redirection
+        canonical = soup.find("link", rel="canonical")
+        if canonical and canonical.get("href") and canonical["href"] != url:
+            url = canonical["href"]
+            print(f"🔁 Canonical redirect: {url}")
+            response = requests.get(url, headers={"User-Agent": "NewsRSSBot/1.0"}, timeout=5)
             soup = BeautifulSoup(response.text, "html.parser")
-            text, score = extract_and_score(soup, KEYWORDS)
 
-            if score > 0:
-                print(f"✅ Match Score {score:.2f} | {url}")
-                results.append({"url": url, "score": score, "content": text[:1000]})
-
-            for link in soup.find_all("a", href=True):
-                if len(results) >= MAX_RESULTS:
-                    break
-                next_url = urljoin(url, link['href'])
-                if urlparse(next_url).scheme.startswith("http"):
-                    crawl(next_url, depth + 1)
-        else:
-            print(f"⚠️ Skipped non-HTML or bad response: {url}")
+        text, score, matched = extract_and_score(soup, KEYWORDS)
+        if score >= MIN_SCORE:
+            print(f"✅ Match ({score}) - {url}")
+            print(f"   → Matched Keywords: {matched}")
+            results.append({
+                "url": url,
+                "score": score,
+                "matched_keywords": matched,
+                "content": text[:1000]
+            })
+            return True
     except Exception as e:
-        print(f"❌ Error visiting {url}: {e}")
+        print(f"❌ Error fetching {url}: {e}")
+    return False
 
-def load_seed_and_run():
-    print("\n🚀 Starting the news crawler...\n")
+def load_and_crawl_rss():
+    print("\n🚀 Starting RSS news crawler...\n")
     os.makedirs("output", exist_ok=True)
 
     try:
-        with open("seed.txt") as f:
-            seed_urls = [line.strip() for line in f if line.strip()]
-            if not seed_urls:
-                print("⚠️ No URLs found in seed.txt.")
-                return
+        with open("rss_feeds.txt") as f:
+            feeds = [line.strip() for line in f if line.strip()]
 
-            for url in seed_urls:
+        for feed_url in feeds:
+            if len(results) >= MAX_RESULTS:
+                break
+
+            print(f"\n🌐 Reading feed: {feed_url}")
+            feed = feedparser.parse(feed_url)
+
+            for entry in feed.entries:
                 if len(results) >= MAX_RESULTS:
                     break
-                crawl(url)
+
+                article_url = entry.link
+
+                # Skip non-article links (feeds, APIs, WordPress junk)
+                if any(ext in article_url for ext in [".xml", ".rss", "feed", "wp-json", "comment", ".php?"]):
+                    continue
+
+                fetch_article(article_url)
 
         if results:
-            # Sort by score descending and limit to top N
-            top_results = sorted(results, key=lambda x: x['score'], reverse=True)[:MAX_RESULTS]
-            with open("output/crawled_data.json", "w", encoding="utf-8") as out:
-                json.dump(top_results, out, ensure_ascii=False, indent=2)
-            print(f"\n✅ Done. {len(top_results)} top-matching articles saved to output/crawled_data.json")
+            with open("output/rss_data.json", "w", encoding="utf-8") as out:
+                json.dump(results, out, ensure_ascii=False, indent=2)
+            print(f"\n✅ {len(results)} relevant articles saved to output/rss_data.json")
         else:
-            print("\n⚠️ No matching content found with the given keywords.")
+            print("\n⚠️ No relevant articles found.")
 
     except FileNotFoundError:
-        print("❌ seed.txt not found!")
+        print("❌ rss_feeds.txt not found! Add some RSS feed URLs first.")
 
 if __name__ == "__main__":
-    load_seed_and_run()
+    load_and_crawl_rss()
