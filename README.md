@@ -4,9 +4,15 @@ A focused Python-based RSS crawler that fetches relevant news articles from trus
 
 ---
 
-## 🚀 Project Objective
+## 🚀 Features
+🔍 Keyword-based matching (main + associated terms)
 
-To build an automated system that can:
-- Crawl and extract data from relevant news websites.
-- Focus on global news and war-related content using primary and associative keywords.
-- Store and index the parsed content for future search and analysis.
+✅ Filters duplicate articles via canonical URLs
+
+📄 Fetches only real articles (not feeds or category pages)
+
+💡 Shows matched keywords per article
+
+🧠 Accurate, clean output using HTML parsing
+
+💾 Saves results in output/rss_data.json
