@@ -1,6 +1,6 @@
 # 🕷️ Web Crawler using Apache Nutch
 
-This project implements a customizable and scalable web crawler using Apache Nutch to collect and index online content related to global events. The crawler targets news, articles, and blogs focused on keywords.
+A focused Python-based RSS crawler that fetches relevant news articles from trusted sources using RSS feeds, filters them based on user-provided keywords, and saves the top 10 most accurate matches in structured JSON format.
 
 ---
 
