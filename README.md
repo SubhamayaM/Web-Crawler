@@ -5,7 +5,7 @@ A focused Python-based RSS crawler that fetches relevant news articles from trus
 ---
 
 ## 🚀 Features
-🔍 Keyword-based matching (main + associated terms)
+🔍 Keyword-based matching (main terms + associated terms)
 
 ✅ Filters duplicate articles via canonical URLs
 
