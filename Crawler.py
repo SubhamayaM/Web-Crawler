@@ -14,7 +14,7 @@ assoc_keywords = input("➤ Associated keywords (comma-separated): ").lower().sp
 
 # Clean up keywords
 KEYWORDS = [kw.strip() for kw in main_keywords + assoc_keywords if kw.strip()]
-MAX_RESULTS = 10
+MAX_RESULTS = 20
 MIN_SCORE = 2
 
 results = []
