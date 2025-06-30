@@ -9,7 +9,7 @@ import os
 print("\n📝 Enter the main keywords:")
 main_keywords = input("➤ Main keywords (comma-separated): ").lower().split(",")
 
-print("\n📝 Enter associated keywords (optional, e.g., AI, UN, economy):")
+print("\n📝 Enter associated keywords (optional):")
 assoc_keywords = input("➤ Associated keywords (comma-separated): ").lower().split(",")
 
 # Clean up keywords
