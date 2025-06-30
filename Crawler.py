@@ -6,7 +6,7 @@ import json
 import os
 
 # User input for keywords
-print("\n📝 Enter the main keywords (e.g., technology, war, climate):")
+print("\n📝 Enter the main keywords:")
 main_keywords = input("➤ Main keywords (comma-separated): ").lower().split(",")
 
 print("\n📝 Enter associated keywords (optional, e.g., AI, UN, economy):")
