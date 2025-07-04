@@ -1,7 +1,7 @@
 #windows
 
 # Navigate to your project directory
- python crawler.py
+ python rss_crawler.py
 
 # Upgrade pip and install required packages
 requests
