@@ -1,4 +1,4 @@
-#windows
+# windows
 
 # Navigate to your project directory
  python rss_crawler.py
